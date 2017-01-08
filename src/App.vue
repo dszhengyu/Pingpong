@@ -20,14 +20,14 @@
         <el-button type="primary" @click.native="ping">ping</el-button>
       </el-col>
     </el-row>
-    <el-row v-if="!logined">
+    <el-row v-if="!userInfo">
       <el-input v-model="email" placeholder="email address"></el-input>
       <el-input v-model="password" placeholder="password"></el-input>
       <el-button @click.native="register">Register</el-button>
       <el-button @click.native="login">Login</el-button>
     </el-row>
-    <el-row v-if="logined">
-      <i class="el-icon-message">{{logined.email}}</i>
+    <el-row v-if="userInfo">
+      <i class="el-icon-message">{{userInfo.email}}</i>
       <el-button @click.native="logout">Logout</el-button>
     </el-row>
 
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-  import Dog from './Dog.js'
+  import Dog from './Dog.vue'
   export default {
     data() {
       return {
@@ -47,59 +47,81 @@
         pingContent: '',
         email: '',
         password: '',
-        logined: null
       }
     },
     computed: {
+      userInfo: function() {
+        return Dog.userInfo;
+      }
     },
     methods: {
-      startHacking() {
-        this.$notify({
-          title: 'It Works',
-          message: 'We have laid the groundwork for you. Now it\'s your time to build something epic!',
-          duration: 6000
-        })
-      },
-      writeIntoWilddog() {
-        console.log(this.input)
-        this.ref.set({
-          "have a try": this.input
-        })
-      },
       ping() {
         console.log("ping ", this.pingContent);
       },
       login() {
-        console.log("login before, user ", Dog.auth.currentUser)
-        Dog.auth.signInWithEmailAndPassword(this.email, this.password).then(function (user) {
+        console.log("login before, user ", Dog.userInfo)
+        Dog.auth.signInWithEmailAndPassword(this.email, this.password).then((user) => {
           console.log("login complete, user " , user);
-        }).catch(function (err) {
+          this.$notify({
+            title: 'Login Success',
+            message: "Welcome Back!",
+            duration: 2000,
+            type: "success"
+          })
+        }).catch((err) => {
           console.error(err)
+          this.$notify({
+            title: 'Login Fail',
+            message: err.message,
+            duration: 6000,
+            type: "error",
+            onClose: function() {location.reload()}
+          })
         })
-        console.log("logined", this.logined)
+        console.log("userInfo", this.userInfo)
       },
       register() {
         console.log("register")
-        Dog.auth.createUserWithEmailAndPassword(this.email, this.password).then(function (user) {
+        Dog.auth.createUserWithEmailAndPassword(this.email, this.password).then((user) => {
           console.log("register complete, user " , user);
-        }).catch(function (err) {
+          this.$notify({
+            title: 'Register Success',
+            message: "Welcome!",
+            duration: 2000,
+            type: "success"
+          })
+        }).catch((err) => {
           console.error(err)
+          this.$notify({
+            title: 'Register Fail',
+            message: err.message,
+            duration: 6000,
+            type: "error",
+            onClose: function() {location.reload()}
+          })
         })
-        console.log("logined", this.logined)
       },
       logout() {
-        console.log("logout before, user", Dog.auth.currentUser)
-        Dog.auth.signOut().then(function () {
+        console.log("logout before, user", Dog.userInfo)
+        Dog.auth.signOut().then(() => {
           console.log("logout complete");
-        }).catch(function (err) {
+          this.$notify({
+            title: 'Logout Success',
+            message: "Do Come Back Soon!",
+            duration: 2000,
+            type: "success"
+          })
+        }).catch((err) => {
           console.error(err)
+          this.$notify({
+            title: 'Logout Fail',
+            message: err.message,
+            duration: 6000,
+            type: "error",
+            onClose: function() {location.reload()}
+          })        
         })
       }
-    },
-    created: function() {
-      Dog.auth.onAuthStateChanged(() => {
-        this.logined = Dog.auth.currentUser;
-      })
     }
   }
 </script>

@@ -1,31 +1,20 @@
 <template>
   <div id="concerntrate">
     <h1>{{ msg }}</h1>
-    <el-button @click.native="startHacking">Let's do it</el-button>
+    <h1>uid: {{ dog.uid }}</h1>
   </div>
 </template>
 
 <script>
-  import Dog from '../Dog.js'
+  import Dog from '../Dog.vue'
   export default {
     data() {
       return {
-        msg: 'In Ping-Concerntrate'
+        msg: 'In Ping-Concerntrate',
+        dog: Dog
       }
     },
     methods: {
-      startHacking() {
-        this.$notify({
-          title: 'It Works',
-          message: 'We have laid the groundwork for you. Now it\'s your time to build something epic!',
-          duration: 6000
-        })
-      }
-    },
-    created: function () {
-      //指定一下能够读取的权限
-      console.log(Dog.ref)
-      //获取关注的人的动态
     }
   }
 </script>
